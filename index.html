@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  x-data
+  x-bind:data-theme="$store.darkMode.on ? 'dark' : 'light'"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimalist Tasks</title>
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <!-- PicoCSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
+    />
+    <!-- Icons -->
+    <link href="https://css.gg/trash.css" rel="stylesheet" />
+    <link href="https://css.gg/sun.css" rel="stylesheet" />
+    <link href="https://css.gg/moon.css" rel="stylesheet" />
+    <link href="https://css.gg/code-slash.css" rel="stylesheet" />
+  </head>
+
+  <body
+    style="
+      display: flex;
+      align-items: center;
+      text-align: center;
+      min-width: 100vw;
+      min-height: 100vh;
+    "
+  >
+    <main style="max-width: 25rem">
+      <section>
+        <hgroup>
+          <h1>Minimalist Tasks</h1>
+          <p>Just the necessary</p>
+        </hgroup>
+
+        <template x-if="$store.page == 'tasks'">
+          <article
+            x-data="{newTaskText: ''}"
+            id="tasks"
+            style="min-height: 23rem"
+          >
+            <ul style="text-align: start; padding-left: 0">
+              <template x-for="task in $store.tasks">
+                <li
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                  "
+                >
+                  <label style="max-width: 21rem">
+                    <input
+                      type="checkbox"
+                      x-model="task.checked"
+                      :checked="task.checked"
+                      @click="changeTaskState(task.id, !task.checked)"
+                    />
+                    <span
+                      x-text="task.message"
+                      :style="task.checked ? 'text-decoration: line-through;' : ''"
+                    ></span>
+                  </label>
+                  <i
+                    style="cursor: pointer"
+                    class="gg-trash"
+                    @click="removeTask(task.id)"
+                  ></i>
+                </li>
+              </template>
+            </ul>
+            <form @submit.prevent="addTask(newTaskText)">
+              <input
+                type="text"
+                name="task-name"
+                id="task-input"
+                x-model="newTaskText"
+                placeholder="Whats needs to be added?"
+              />
+              <button type="submit">Add task</button>
+            </form>
+          </article>
+        </template>
+        <template x-if="$store.page == 'about'">
+          <article
+            id="#about"
+            style="min-height: 23rem; text-align: justify; padding: 3rem"
+          >
+            <section>
+              <p>
+                This is a small experiment and learning project, with the
+                intention of making a working
+                <abbr data-tooltip="Single Page Application"> SPA </abbr>
+                with just a single HTML file. <i>"Just the necessary"</i>
+              </p>
+              <!-- <p style="opacity: 0.25;">
+                <s>
+                  <small>
+                    And simply out of curiosity to learn and try Alpine.js and
+                    PicoCSS.
+                  </small>
+                </s>
+              </p> -->
+            </section>
+            <section>
+              <p style="margin: 0"><small>Tech Stack:</small></p>
+              <ul style="display: flex; padding: 0">
+                <li
+                  style="list-style: none; margin: 0.5rem; border: 0"
+                  data-tooltip="AlpineJS"
+                >
+                  <a href="https://alpinejs.dev" target="_blank">
+                    <img
+                      src="https://alpinejs.dev/favicon.png"
+                      alt="AlpineJS Icon"
+                    />
+                  </a>
+                </li>
+                <li
+                  style="list-style: none; margin: 0.5rem; border: 0"
+                  data-tooltip="PicoCSS"
+                >
+                  <a href="https://picocss.com" target="_blank">
+                    <img
+                      src="https://picocss.com/img/favicon-32x32.png"
+                      alt="PicoCSS Icon"
+                    />
+                  </a>
+                </li>
+                <li
+                  style="list-style: none; margin: 0.5rem; border: 0"
+                  data-tooltip="css.gg"
+                >
+                  <a href="https://css.gg" target="_blank">
+                    <img
+                      src="https://css.gg/fav/favicon-32x32.png"
+                      alt="css.gg Icon"
+                    />
+                  </a>
+                </li>
+                <li
+                  style="list-style: none; margin: 0.5rem; border: 0"
+                  data-tooltip="Vercel"
+                >
+                  <a href="https://vercel.com" target="_blank">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 76 65"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M37.5274 0L75.0548 65H0L37.5274 0Z"
+                        :fill="$store.darkMode.on ? '#fff' : '#000'"
+                      />
+                    </svg>
+                  </a>
+                </li>
+              </ul>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                "
+              >
+                <p style="margin: 0">
+                  Created by
+                  <a href="https://guz.vercel.app" target="_blank">Guz</a>
+                </p>
+                <a
+                  href="https://codeberg.org/Guz013/MinimalistTasks"
+                  target="_blank"
+                  data-tooltip="Source Code"
+                >
+                  <i class="gg-code-slash"></i>
+                </a>
+              </div>
+            </section>
+          </article>
+        </template>
+      </section>
+      <footer>
+        <section
+          style="
+            display: flex;
+            width: 6rem;
+            align-items: center;
+            justify-content: space-between;
+            margin: auto;
+          "
+        >
+          <i class="gg-sun"></i>
+          <input
+            x-data
+            type="checkbox"
+            name="changeTheme"
+            role="switch"
+            x-model="$store.darkMode.on"
+            @click="$store.darkMode.toggle()"
+          />
+          <i class="gg-moon"></i>
+        </section>
+        <section style="margin-top: 1rem; opacity: 0.25">
+          <template x-if="$store.page == 'tasks'">
+            <a
+              href="#about"
+              @click="$store.page = 'about'; localStorage.setItem('page', 'about')"
+              ><small>About</small></a
+            >
+          </template>
+          <template x-if="$store.page == 'about'">
+            <a
+              href="#tasks"
+              @click="$store.page = 'tasks'; localStorage.setItem('page', 'tasks')"
+            >
+              <small>Tasks</small></a
+            >
+          </template>
+        </section>
+      </footer>
+    </main>
+
+    <script>
+      const icons = {};
+
+      function addTask(text) {
+        Alpine.store("tasks").push({
+          message: text,
+          checked: false,
+          id: Math.random(),
+        });
+        localStorage.setItem("tasks", JSON.stringify(Alpine.store("tasks")));
+      }
+      function removeTask(id) {
+        const index = Alpine.store("tasks").findIndex((t) => t.id === id);
+        if (index > -1) Alpine.store("tasks").splice(index, 1);
+        localStorage.setItem("tasks", JSON.stringify(Alpine.store("tasks")));
+      }
+      function changeTaskState(id, state) {
+        const index = Alpine.store("tasks").findIndex((t) => t.id === id);
+        if (index > -1) Alpine.store("tasks")[index].checked = state;
+        localStorage.setItem("tasks", JSON.stringify(Alpine.store("tasks")));
+      }
+
+      document.addEventListener("alpine:init", () => {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [
+          {
+            message: "Create HTML document",
+            checked: true,
+            id: Math.random(),
+          },
+          {
+            message: "Finish application",
+            checked: true,
+            id: Math.random(),
+          },
+          {
+            message: "Publish to the world",
+            checked: true,
+            id: Math.random(),
+          },
+          {
+            message: "Rewrite with AlpineJS Persist",
+            checked: false,
+            id: Math.random(),
+          },
+          {
+            message: "Add animations?",
+            checked: false,
+            id: Math.random(),
+          },
+        ];
+        Alpine.store("tasks", tasks);
+
+        Alpine.store("darkMode", {
+          init() {
+            this.on =
+              window.matchMedia("(prefers-color-scheme: dark)").matches ||
+              JSON.parse(localStorage.getItem("darkMode"));
+          },
+          on: false,
+          toggle() {
+            localStorage.setItem("darkMode", JSON.stringify(!this.on));
+            this.on = !this.on;
+          },
+        });
+
+        const page = localStorage.getItem("page") || "tasks";
+        Alpine.store("page", page);
+
+        Alpine.store("tools", [
+          {
+            name: "AlpineJS",
+            url: "https://alpinejs.dev",
+            icon: "https://alpinejs.dev/favicon.png",
+          },
+          {
+            name: "PicoCSS",
+            url: "https://picocss.com",
+            icon: "https://picocss.com/img/favicon-32x32.png",
+          },
+        ]);
+      });
+    </script>
+
+    <style>
+      /* PicoCSS customization */
+
+      /* Blue-grey Light scheme (Default) */
+      /* Can be forced with data-theme="light" */
+      [data-theme="light"],
+      :root:not([data-theme="dark"]) {
+        --primary: #546e7a;
+        --primary-hover: #455a64;
+        --primary-focus: rgba(84, 110, 122, 0.125);
+        --primary-inverse: #fff;
+      }
+
+      /* Blue-grey Dark scheme (Auto) */
+      /* Automatically enabled if user has Dark mode enabled */
+      @media only screen and (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --primary: #546e7a;
+          --primary-hover: #607d8b;
+          --primary-focus: rgba(84, 110, 122, 0.25);
+          --primary-inverse: #fff;
+        }
+      }
+
+      /* Blue-grey Dark scheme (Forced) */
+      /* Enabled if forced with data-theme="dark" */
+      [data-theme="dark"] {
+        --primary: #546e7a;
+        --primary-hover: #607d8b;
+        --primary-focus: rgba(84, 110, 122, 0.25);
+        --primary-inverse: #fff;
+      }
+
+      /* Blue-grey (Common styles) */
+      :root {
+        --form-element-active-border-color: var(--primary);
+        --form-element-focus-color: var(--primary-focus);
+        --switch-color: var(--primary-inverse);
+        --switch-checked-background-color: var(--primary);
+      }
+    </style>
+  </body>
+</html>
